@@ -55,7 +55,7 @@ and delete current Python and "venv" folder in wui's directory.
 
 You can download 3.10 Python from here: https://www.python.org/downloads/release/python-3106/
 
-{"Alternatively, use a binary release of wui: https://github.com/AUTOMATIC1111/stable-diffusion-wui/releases" if is_windows else ""}
+{"Alternatively, use a binary release of wui: https://github.com/Elaina117/sd-wui/releases" if is_windows else ""}
 
 Use --skip-python-version-check to suppress this warning.
 """)
@@ -205,7 +205,7 @@ def git_pull_recursive(dir):
 def version_check(commit):
     try:
         import requests
-        commits = requests.get('https://api.github.com/repos/AUTOMATIC1111/stable-diffusion-wui/branches/master').json()
+        commits = requests.get('https://github.com/Elaina117/sd-wui/main').json()
         if commit != "<none>" and commits['commit']['sha'] != commit:
             print("--------------------------------------------------------")
             print("| You are not up to date with the most recent release. |")
