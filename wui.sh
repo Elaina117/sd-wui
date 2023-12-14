@@ -35,10 +35,10 @@ then
     install_dir="$SCRIPT_DIR"
 fi
 
-# Name of the subdirectory (defaults to stable-diffusion-wui)
+# Name of the subdirectory (defaults to sd-wui)
 if [[ -z "${clone_dir}" ]]
 then
-    clone_dir="stable-diffusion-wui"
+    clone_dir="sd-wui"
 fi
 
 # python3 executable
@@ -86,7 +86,7 @@ export PIP_IGNORE_INSTALLED=0
 delimiter="################################################################"
 
 printf "\n%s\n" "${delimiter}"
-printf "\e[1m\e[32mInstall script for stable-diffusion + Web UI\n"
+printf "\e[1m\e[32mInstall script for sd + Web UI\n"
 printf "\e[1m\e[34mTested on Debian 11 (Bullseye)\e[0m"
 printf "\n%s\n" "${delimiter}"
 
@@ -186,9 +186,9 @@ then
     cd "${clone_dir}"/ || { printf "\e[1m\e[31mERROR: Can't cd to %s/%s/, aborting...\e[0m" "${install_dir}" "${clone_dir}"; exit 1; }
 else
     printf "\n%s\n" "${delimiter}"
-    printf "Clone stable-diffusion-wui"
+    printf "Clone sd-wui"
     printf "\n%s\n" "${delimiter}"
-    "${GIT}" clone https://github.com/stable-diffusion-wui.git "${clone_dir}"
+    "${GIT}" clone https://github.com/sd-wui.git "${clone_dir}"
     cd "${clone_dir}"/ || { printf "\e[1m\e[31mERROR: Can't cd to %s/%s/, aborting...\e[0m" "${install_dir}" "${clone_dir}"; exit 1; }
 fi
 
