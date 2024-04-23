@@ -462,7 +462,7 @@ def configure_for_tests():
 
 def start():
     print(f"Launching {'API server' if '--nowui' in sys.argv else 'Web UI'} with arguments: {' '.join(sys.argv[1:])}")
-    import webui
+    import wui
     if '--nowui' in sys.argv:
         wui.api_only()
     else:

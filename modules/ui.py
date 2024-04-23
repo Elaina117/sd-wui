@@ -1166,7 +1166,7 @@ def create_ui():
 
 def versions_html():
     import torch
-    import launch
+    import lach
 
     python_version = ".".join([str(x) for x in sys.version_info[0:3]])
     commit = launch.commit_hash()
