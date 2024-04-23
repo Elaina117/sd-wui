@@ -63,7 +63,7 @@ fi
 
 if [[ -z "${LAUNCH_SCRIPT}" ]]
 then
-    LAUNCH_SCRIPT="launch.py"
+    LAUNCH_SCRIPT="lch.py"
 fi
 
 # this script cannot be run as root by default
