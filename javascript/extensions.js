@@ -2,8 +2,11 @@
 function extensions_apply(_disabled_list, _update_list, disable_all) {
     var disable = [];
     var update = [];
-
-    gradioApp().querySelectorAll('#extensions input[type="checkbox"]').forEach(function(x) {
+    const extensions_input = gradioApp().querySelectorAll('#extensions input[type="checkbox"]');
+    if (extensions_input.length == 0) {
+        throw Error("Extensions page not yet loaded.");
+    }
+    extensions_input.forEach(function(x) {
         if (x.name.startsWith("enable_") && !x.checked) {
             disable.push(x.name.substring(7));
         }
@@ -58,10 +61,10 @@ function config_state_confirm_restore(_, config_state_name, config_restore_type)
     let restored = "";
     if (config_restore_type == "extensions") {
         restored = "all saved extension versions";
-    } else if (config_restore_type == "wui") {
-        restored = "the wui version";
+    } else if (config_restore_type == "webui") {
+        restored = "the webui version";
     } else {
-        restored = "the wui version and all saved extension versions";
+        restored = "the webui version and all saved extension versions";
     }
     let confirmed = confirm("Are you sure you want to restore from this state?\nThis will reset " + restored + ".");
     if (confirmed) {
