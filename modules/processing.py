@@ -694,7 +694,7 @@ def fix_seed(p):
 
 
 def program_version():
-    import lch
+    import launch
 
     res = launch.git_tag()
     if res == "<none>":

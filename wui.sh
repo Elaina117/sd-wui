@@ -16,7 +16,7 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
 fi
 
 # Read variables from wui-user.sh
-# shellcheck source=/dev/null
+# shellauncheck source=/dev/null
 if [[ -f "$SCRIPT_DIR"/wui-user.sh ]]
 then
     source "$SCRIPT_DIR"/wui-user.sh
@@ -63,7 +63,7 @@ fi
 
 if [[ -z "${LAUNCH_SCRIPT}" ]]
 then
-    LAUNCH_SCRIPT="lch.py"
+    LAUNCH_SCRIPT="launch.py"
 fi
 
 # this script cannot be run as root by default
@@ -212,7 +212,7 @@ then
         "${python_cmd}" -m venv "${venv_dir}"
         first_launch=1
     fi
-    # shellcheck source=/dev/null
+    # shellauncheck source=/dev/null
     if [[ -f "${venv_dir}"/bin/activate ]]
     then
         source "${venv_dir}"/bin/activate
