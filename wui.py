@@ -39,13 +39,13 @@ def api_only():
 
     print(f"Startup time: {startup_timer.summary()}.")
     api.launch(
-        server_name="0.0.0.0" if cmd_opts.listen else "127.0.0.1",
+        server_name=initialize_util.gradio_server_name(),
         port=cmd_opts.port if cmd_opts.port else 7861,
         root_path=f"/{cmd_opts.subpath}" if cmd_opts.subpath else ""
     )
 
 
-def wui():
+def webui():
     from modules.shared_cmd_options import cmd_opts
 
     launch_api = cmd_opts.api
@@ -70,11 +70,11 @@ def wui():
         gradio_auth_creds = list(initialize_util.get_gradio_auth_creds()) or None
 
         auto_launch_browser = False
-        if os.getenv('SD_wui_RESTARTING') != '1':
+        if os.getenv('SD_WEBUI_RESTARTING') != '1':
             if shared.opts.auto_launch_browser == "Remote" or cmd_opts.autolaunch:
                 auto_launch_browser = True
             elif shared.opts.auto_launch_browser == "Local":
-                auto_launch_browser = not any([cmd_opts.listen, cmd_opts.share, cmd_opts.ngrok, cmd_opts.server_name])
+                auto_launch_browser = not cmd_opts.webui_is_non_local
 
         app, local_url, share_url = shared.demo.launch(
             share=cmd_opts.share,
@@ -139,8 +139,8 @@ def wui():
             shared.demo.close()
             break
 
-        # disable auto launch wui in browser for subsequent UI Reload
-        os.environ.setdefault('SD_wui_RESTARTING', '1')
+        # disable auto launch webui in browser for subsequent UI Reload
+        os.environ.setdefault('SD_WEBUI_RESTARTING', '1')
 
         print('Restarting UI...')
         shared.demo.close()
@@ -156,7 +156,7 @@ def wui():
 if __name__ == "__main__":
     from modules.shared_cmd_options import cmd_opts
 
-    if cmd_opts.nowui:
+    if cmd_opts.nowebui:
         api_only()
     else:
-        wui()
+        webui()
