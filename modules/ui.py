@@ -1138,7 +1138,7 @@ def create_ui():
                 if ifid not in ["extensions", "settings"]:
                     loadsave.add_block(interface, ifid)
 
-            loadsave.add_component(f"webui/Tabs@{tabs.elem_id}", tabs)
+            loadsave.add_component(f"wui/Tabs@{tabs.elem_id}", tabs)
 
             loadsave.setup_ui()
 
@@ -1166,7 +1166,7 @@ def create_ui():
 
 def versions_html():
     import torch
-    import launch
+    import lch
 
     python_version = ".".join([str(x) for x in sys.version_info[0:3]])
     commit = launch.commit_hash()
@@ -1221,4 +1221,4 @@ def setup_ui_api(app):
     app.add_api_route("/internal/sysinfo-download", lambda: download_sysinfo(attachment=True), methods=["GET"])
 
     import fastapi.staticfiles
-    app.mount("/webui-assets", fastapi.staticfiles.StaticFiles(directory=launch_utils.repo_dir('sd-wui-assets')), name="webui-assets")
+    app.mount("/wui-assets", fastapi.staticfiles.StaticFiles(directory=launch_utils.repo_dir('sd-wui-assets')), name="wui-assets")

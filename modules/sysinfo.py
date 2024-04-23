@@ -8,14 +8,14 @@ import pkg_resources
 import psutil
 import re
 
-import launch
+import lch
 from modules import paths_internal, timer, shared, extensions, errors
 
 checksum_token = "DontStealMyGamePlz__WINNERS_DONT_USE_DRUGS__DONT_COPY_THAT_FLOPPY"
 environment_whitelist = {
     "GIT",
     "INDEX_URL",
-    "WEBUI_LAUNCH_LIVE_OUTPUT",
+    "wui_LAUNCH_LIVE_OUTPUT",
     "GRADIO_ANALYTICS_ENABLED",
     "PYTHONPATH",
     "TORCH_INDEX_URL",
