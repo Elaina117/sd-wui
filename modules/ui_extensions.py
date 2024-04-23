@@ -387,7 +387,7 @@ def install_extension_from_url(dirname, url, branch_name=None):
                 # Something else, not enough free space, permissions, etc.  rethrow it so that it gets handled.
                 raise err
 
-        import lach
+        import launch
         launch.run_extension_installer(target_dir)
 
         extensions.list_extensions()

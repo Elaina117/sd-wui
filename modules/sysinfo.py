@@ -8,7 +8,7 @@ import pkg_resources
 import psutil
 import re
 
-import lach
+import launch
 from modules import paths_internal, timer, shared, extensions, errors
 
 checksum_token = "DontStealMyGamePlz__WINNERS_DONT_USE_DRUGS__DONT_COPY_THAT_FLOPPY"
