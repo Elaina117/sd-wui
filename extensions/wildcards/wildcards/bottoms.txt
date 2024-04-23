@@ -1,0 +1,15 @@
+skirt
+long skirt
+mini skirt
+rolled skirt
+pleated skirt
+layered skirt
+plaid_skirt
+pleated plaid_skirt
+checked skirt, drawers
+
+denim shorts
+hotpants
+pants
+leather pants
+pom-pom pants

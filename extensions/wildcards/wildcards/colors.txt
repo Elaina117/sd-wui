@@ -1,0 +1,25 @@
+black
+blond
+silver
+gray
+yellow
+blue
+sky blue
+indigo
+purple
+red
+burgundy
+vermilion
+pink
+coral
+brown
+orange
+turquoise
+green
+aqua
+amber
+hazel
+iridescence
+multicolored
+gradient
+starry print

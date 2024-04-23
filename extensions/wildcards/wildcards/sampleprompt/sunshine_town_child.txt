@@ -1,0 +1,21 @@
+kawaii petit child childish 1girl, (skindantation) (flat chest) 
+
+__colors__ eyes, 
+
+__strength__ __colors__ hair, 
+{ short hair | long hair | medium hair | very long hair }, 
+__hairA__, 
+{ streaked hair | drill hair | wavy hair }, 
+__bangs__, 
+{ sideburns | hair flaps }, 
+
+__facial__, 
+{ | embarrassed | blush | nose blush }, 
+{ | head_tilt standing } 
+
+{ __colors__ __clothesA__ | __strength__ __colors__ __clothesB__ __colors__ __bottoms__ } __socks__ __shoes__
+
+__scene__ sunlight, depth of field, strong light coming in light rays light sparkles lens flare
+
+__poses__
+

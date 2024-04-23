@@ -1,0 +1,17 @@
+-
+light
+-
+dark
+-
+bright
+-
+deep
+-
+vivid
+-
+pale
+-
+clear
+-
+transparency
+-

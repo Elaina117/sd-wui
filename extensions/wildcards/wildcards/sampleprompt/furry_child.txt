@@ -1,0 +1,19 @@
+kawaii petit child childish 1girl, (skindantation) medium breasts, 
+
+__furry__ beastman girl, 
+
+__strength__ __colors__ eyes, 
+
+__strength__ __colors__ hair, 
+{ short hair | long hair | medium hair | very long hair }, 
+__hairA__, 
+__bangs__, 
+{ sideburns | hair flaps }, 
+
+__facial__, fang
+{ | embarrassed | blush | nose blush }, 
+{ | head_tilt standing } 
+
+{ __colors__ __clothesA__ | __strength__ __colors__ __clothesB__ __colors__ __bottoms__ } __socks__ __shoes__
+
+__scene__ deep shadows, depth of field half moon, night, dynamic pose

@@ -1,0 +1,23 @@
+Airport
+energy plant
+rooftopm Tokyo(city) building Skyscraper
+wharf luxury liner fog
+amusement park carousel ferris_wheel
+Akihabara(City) Traffic signals Street lights Neon signs Decorative signs building
+Hong Kong(City) Traffic signals Street lights Neon signs Decorative signs building
+downtown Traffic signals Street lights Neon signs Decorative signs building
+City Traffic signals Street lights Neon signs Decorative signs building
+City cars Headlights Tail lamps Traffic jam Bill 
+Kowloon Walled City
+Las Vegas
+Manhattan
+Sapporo
+ariake
+Matsumoto
+Shinjuku Kabukicho
+Doutonbori
+Hakodate
+City Shibuya Harajuku 109
+Disney land
+Tokyo Tower
+Skytree

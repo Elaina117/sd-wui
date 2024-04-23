@@ -1,0 +1,22 @@
+sandales
+bulb_toe_shoes
+shoes
+sneakers
+trainers
+combat boots
+short boots
+dress shoes
+leather shoes
+loafer
+monk strap
+full brogue
+thigh high boots
+knee high boots
+ankle boots
+platform shoes
+platform sneakers
+platform boots
+platform sandals
+slippers
+
+bare feet
