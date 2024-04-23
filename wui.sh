@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 #################################################
 # Please do not make any changes to this file,  #
-# change the variables in webui-user.sh instead #
+# change the variables in wui-user.sh instead #
 #################################################
 
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
 
-# If run from macOS, load defaults from webui-macos-env.sh
+# If run from macOS, load defaults from wui-macos-env.sh
 if [[ "$OSTYPE" == "darwin"* ]]; then
     if [[ -f "$SCRIPT_DIR"/wui-macos-env.sh ]]
         then
@@ -15,7 +15,7 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
     fi
 fi
 
-# Read variables from webui-user.sh
+# Read variables from wui-user.sh
 # shellcheck source=/dev/null
 if [[ -f "$SCRIPT_DIR"/wui-user.sh ]]
 then
@@ -69,7 +69,7 @@ fi
 # this script cannot be run as root by default
 can_run_as_root=0
 
-# read any command line flags to the webui.sh script
+# read any command line flags to the wui.sh script
 while getopts "f" flag > /dev/null 2>&1
 do
     case ${flag} in
@@ -275,7 +275,7 @@ prepare_tcmalloc() {
 }
 
 KEEP_GOING=1
-export SD_WEBUI_RESTART=tmp/restart
+export SD_wui_RESTART=tmp/restart
 while [[ "$KEEP_GOING" -eq "1" ]]; do
     if [[ ! -z "${ACCELERATE}" ]] && [ ${ACCELERATE}="True" ] && [ -x "$(command -v accelerate)" ]; then
         printf "\n%s\n" "${delimiter}"
