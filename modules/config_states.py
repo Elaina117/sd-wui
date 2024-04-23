@@ -1,10 +1,9 @@
 """
-Supports saving and restoring wui and extensions from a known working set of commits
+Supports saving and restoring webui and extensions from a known working set of commits
 """
 
 import os
 import json
-import time
 import tqdm
 
 from datetime import datetime
@@ -38,7 +37,7 @@ def list_config_states():
     config_states = sorted(config_states, key=lambda cs: cs["created_at"], reverse=True)
 
     for cs in config_states:
-        timestamp = time.asctime(time.gmtime(cs["created_at"]))
+        timestamp = datetime.fromtimestamp(cs["created_at"]).strftime('%Y-%m-%d %H:%M:%S')
         name = cs.get("name", "Config")
         full_name = f"{name}: {timestamp}"
         all_config_states[full_name] = cs
@@ -46,35 +45,35 @@ def list_config_states():
     return all_config_states
 
 
-def get_wui_config():
-    wui_repo = None
+def get_webui_config():
+    webui_repo = None
 
     try:
         if os.path.exists(os.path.join(script_path, ".git")):
-            wui_repo = git.Repo(script_path)
+            webui_repo = git.Repo(script_path)
     except Exception:
-        errors.report(f"Error reading wui git info from {script_path}", exc_info=True)
+        errors.report(f"Error reading webui git info from {script_path}", exc_info=True)
 
-    wui_remote = None
-    wui_commit_hash = None
-    wui_commit_date = None
-    wui_branch = None
-    if wui_repo and not wui_repo.bare:
+    webui_remote = None
+    webui_commit_hash = None
+    webui_commit_date = None
+    webui_branch = None
+    if webui_repo and not webui_repo.bare:
         try:
-            wui_remote = next(wui_repo.remote().urls, None)
-            head = wui_repo.head.commit
-            wui_commit_date = wui_repo.head.commit.committed_date
-            wui_commit_hash = head.hexsha
-            wui_branch = wui_repo.active_branch.name
+            webui_remote = next(webui_repo.remote().urls, None)
+            head = webui_repo.head.commit
+            webui_commit_date = webui_repo.head.commit.committed_date
+            webui_commit_hash = head.hexsha
+            webui_branch = webui_repo.active_branch.name
 
         except Exception:
-            wui_remote = None
+            webui_remote = None
 
     return {
-        "remote": wui_remote,
-        "commit_hash": wui_commit_hash,
-        "commit_date": wui_commit_date,
-        "branch": wui_branch,
+        "remote": webui_remote,
+        "commit_hash": webui_commit_hash,
+        "commit_date": webui_commit_date,
+        "branch": webui_branch,
     }
 
 
@@ -103,45 +102,45 @@ def get_extension_config():
 
 def get_config():
     creation_time = datetime.now().timestamp()
-    wui_config = get_wui_config()
+    webui_config = get_webui_config()
     ext_config = get_extension_config()
 
     return {
         "created_at": creation_time,
-        "wui": wui_config,
+        "webui": webui_config,
         "extensions": ext_config
     }
 
 
-def restore_wui_config(config):
-    print("* Restoring wui state...")
+def restore_webui_config(config):
+    print("* Restoring webui state...")
 
-    if "wui" not in config:
-        print("Error: No wui data saved to config")
+    if "webui" not in config:
+        print("Error: No webui data saved to config")
         return
 
-    wui_config = config["wui"]
+    webui_config = config["webui"]
 
-    if "commit_hash" not in wui_config:
-        print("Error: No commit saved to wui config")
+    if "commit_hash" not in webui_config:
+        print("Error: No commit saved to webui config")
         return
 
-    wui_commit_hash = wui_config.get("commit_hash", None)
-    wui_repo = None
+    webui_commit_hash = webui_config.get("commit_hash", None)
+    webui_repo = None
 
     try:
         if os.path.exists(os.path.join(script_path, ".git")):
-            wui_repo = git.Repo(script_path)
+            webui_repo = git.Repo(script_path)
     except Exception:
-        errors.report(f"Error reading wui git info from {script_path}", exc_info=True)
+        errors.report(f"Error reading webui git info from {script_path}", exc_info=True)
         return
 
     try:
-        wui_repo.git.fetch(all=True)
-        wui_repo.git.reset(wui_commit_hash, hard=True)
-        print(f"* Restored wui to commit {wui_commit_hash}.")
+        webui_repo.git.fetch(all=True)
+        webui_repo.git.reset(webui_commit_hash, hard=True)
+        print(f"* Restored webui to commit {webui_commit_hash}.")
     except Exception:
-        errors.report(f"Error restoring wui to commit{wui_commit_hash}")
+        errors.report(f"Error restoring webui to commit{webui_commit_hash}")
 
 
 def restore_extension_config(config):

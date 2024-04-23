@@ -8,10 +8,13 @@ from pydantic import BaseModel, Field
 from modules.shared import opts
 
 import modules.shared as shared
-
+from collections import OrderedDict
+import string
+import random
+from typing import List
 
 current_task = None
-pending_tasks = {}
+pending_tasks = OrderedDict()
 finished_tasks = []
 recorded_results = []
 recorded_results_limit = 2
@@ -34,6 +37,11 @@ def finish_task(id_task):
     if len(finished_tasks) > 16:
         finished_tasks.pop(0)
 
+def create_task_id(task_type):
+    N = 7
+    res = ''.join(random.choices(string.ascii_uppercase +
+    string.digits, k=N))
+    return f"task({task_type}-{res})"
 
 def record_results(id_task, res):
     recorded_results.append((id_task, res))
@@ -44,6 +52,9 @@ def record_results(id_task, res):
 def add_task_to_queue(id_job):
     pending_tasks[id_job] = time.time()
 
+class PendingTasksResponse(BaseModel):
+    size: int = Field(title="Pending task size")
+    tasks: List[str] = Field(title="Pending task ids")
 
 class ProgressRequest(BaseModel):
     id_task: str = Field(default=None, title="Task ID", description="id of the task to get progress for")
@@ -59,11 +70,18 @@ class ProgressResponse(BaseModel):
     eta: float = Field(default=None, title="ETA in secs")
     live_preview: str = Field(default=None, title="Live preview image", description="Current live preview; a data: uri")
     id_live_preview: int = Field(default=None, title="Live preview image ID", description="Send this together with next request to prevent receiving same image")
-    textinfo: str = Field(default=None, title="Info text", description="Info text used by wui.")
+    textinfo: str = Field(default=None, title="Info text", description="Info text used by WebUI.")
 
 
 def setup_progress_api(app):
+    app.add_api_route("/internal/pending-tasks", get_pending_tasks, methods=["GET"])
     return app.add_api_route("/internal/progress", progressapi, methods=["POST"], response_model=ProgressResponse)
+
+
+def get_pending_tasks():
+    pending_tasks_ids = list(pending_tasks)
+    pending_len = len(pending_tasks_ids)
+    return PendingTasksResponse(size=pending_len, tasks=pending_tasks_ids)
 
 
 def progressapi(req: ProgressRequest):

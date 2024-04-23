@@ -6,8 +6,8 @@ if TYPE_CHECKING:
     from modules.sd_models import CheckpointInfo
 
 
-class wuiSdModel(LatentDiffusion):
-    """This class is not actually instantinated, but its fields are created and fieeld by wui"""
+class WebuiSdModel(LatentDiffusion):
+    """This class is not actually instantinated, but its fields are created and fieeld by webui"""
 
     lowvram: bool
     """True if lowvram/medvram optimizations are enabled -- see modules.lowvram for more info"""
@@ -22,7 +22,10 @@ class wuiSdModel(LatentDiffusion):
     """structure with additional information about the file with model's weights"""
 
     is_sdxl: bool
-    """True if the model's architecture is SDXL"""
+    """True if the model's architecture is SDXL or SSD"""
+
+    is_ssd: bool
+    """True if the model is SSD"""
 
     is_sd2: bool
     """True if the model's architecture is SD 2.x"""
