@@ -1,10 +1,9 @@
-from transformers import BertPreTrainedModel, BertConfig
+from transformers import BertPreTrainedModel,BertConfig
 import torch.nn as nn
 import torch
 from transformers.models.xlm_roberta.configuration_xlm_roberta import XLMRobertaConfig
 from transformers import XLMRobertaModel,XLMRobertaTokenizer
 from typing import Optional
-
 from modules import torch_utils
 
 
@@ -54,14 +53,20 @@ class BertSeriesModelWithTransformation(BertPreTrainedModel):
             config.type_vocab_size= 1
             config.use_cache=True
             config.vocab_size= 250002
-            config.project_dim = 768
+            config.project_dim = 1024
             config.learn_encoder = False
         super().__init__(config)
         self.roberta = XLMRobertaModel(config)
         self.transformation = nn.Linear(config.hidden_size,config.project_dim)
-        self.pre_LN=nn.LayerNorm(config.hidden_size, eps=config.layer_norm_eps)
+        # self.pre_LN=nn.LayerNorm(config.hidden_size, eps=config.layer_norm_eps)
         self.tokenizer = XLMRobertaTokenizer.from_pretrained('xlm-roberta-large')
-        self.pooler = lambda x: x[:,0]
+        # self.pooler = lambda x: x[:,0]
+        # self.post_init()
+
+        self.has_pre_transformation = True
+        if self.has_pre_transformation:
+            self.transformation_pre = nn.Linear(config.hidden_size, config.project_dim)
+            self.pre_LN = nn.LayerNorm(config.hidden_size, eps=config.layer_norm_eps)
         self.post_init()
 
     def encode(self,c):
@@ -113,26 +118,47 @@ class BertSeriesModelWithTransformation(BertPreTrainedModel):
             return_dict=return_dict,
         )
 
-        # last module outputs
-        sequence_output = outputs[0]
+        # # last module outputs
+        # sequence_output = outputs[0]
 
 
-        # project every module
-        sequence_output_ln = self.pre_LN(sequence_output)
+        # # project every module
+        # sequence_output_ln = self.pre_LN(sequence_output)
 
-        # pooler
-        pooler_output = self.pooler(sequence_output_ln)
-        pooler_output = self.transformation(pooler_output)
-        projection_state = self.transformation(outputs.last_hidden_state)
+        # # pooler
+        # pooler_output = self.pooler(sequence_output_ln)
+        # pooler_output = self.transformation(pooler_output)
+        # projection_state = self.transformation(outputs.last_hidden_state)
 
-        return {
-            'pooler_output':pooler_output,
-            'last_hidden_state':outputs.last_hidden_state,
-            'hidden_states':outputs.hidden_states,
-            'attentions':outputs.attentions,
-            'projection_state':projection_state,
-            'sequence_out': sequence_output
-        }
+        if self.has_pre_transformation:
+            sequence_output2 = outputs["hidden_states"][-2]
+            sequence_output2 = self.pre_LN(sequence_output2)
+            projection_state2 = self.transformation_pre(sequence_output2)
+
+            return {
+                "projection_state": projection_state2,
+                "last_hidden_state": outputs.last_hidden_state,
+                "hidden_states": outputs.hidden_states,
+                "attentions": outputs.attentions,
+            }
+        else:
+            projection_state = self.transformation(outputs.last_hidden_state)
+            return {
+                "projection_state": projection_state,
+                "last_hidden_state": outputs.last_hidden_state,
+                "hidden_states": outputs.hidden_states,
+                "attentions": outputs.attentions,
+            }
+
+
+        # return {
+        #     'pooler_output':pooler_output,
+        #     'last_hidden_state':outputs.last_hidden_state,
+        #     'hidden_states':outputs.hidden_states,
+        #     'attentions':outputs.attentions,
+        #     'projection_state':projection_state,
+        #     'sequence_out': sequence_output
+        # }
 
 
 class RobertaSeriesModelWithTransformation(BertSeriesModelWithTransformation):

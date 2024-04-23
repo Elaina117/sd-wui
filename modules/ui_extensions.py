@@ -58,18 +58,19 @@ def apply_and_restart(disable_list, update_list, disable_all):
 
 def save_config_state(name):
     current_config_state = config_states.get_config()
-    if not name:
-        name = "Config"
+
+    name = os.path.basename(name or "Config")
+
     current_config_state["name"] = name
     timestamp = datetime.now().strftime('%Y_%m_%d-%H_%M_%S')
     filename = os.path.join(config_states_dir, f"{timestamp}_{name}.json")
-    print(f"Saving backup of wui/extension state to {filename}.")
+    print(f"Saving backup of webui/extension state to {filename}.")
     with open(filename, "w", encoding="utf-8") as f:
-        json.dump(current_config_state, f, indent=4)
+        json.dump(current_config_state, f, indent=4, ensure_ascii=False)
     config_states.list_config_states()
     new_value = next(iter(config_states.all_config_states.keys()), "Current")
     new_choices = ["Current"] + list(config_states.all_config_states.keys())
-    return gr.Dropdown.update(value=new_value, choices=new_choices), f"<span>Saved current wui/extension state to \"{filename}\"</span>"
+    return gr.Dropdown.update(value=new_value, choices=new_choices), f"<span>Saved current webui/extension state to \"{filename}\"</span>"
 
 
 def restore_config_state(confirmed, config_state_name, restore_type):
@@ -82,14 +83,14 @@ def restore_config_state(confirmed, config_state_name, restore_type):
 
     config_state = config_states.all_config_states[config_state_name]
 
-    print(f"*** Restoring wui state from backup: {restore_type} ***")
+    print(f"*** Restoring webui state from backup: {restore_type} ***")
 
     if restore_type == "extensions" or restore_type == "both":
         shared.opts.restore_config_state_file = config_state["filepath"]
         shared.opts.save(shared.config_filename)
 
-    if restore_type == "wui" or restore_type == "both":
-        config_states.restore_wui_config(config_state)
+    if restore_type == "webui" or restore_type == "both":
+        config_states.restore_webui_config(config_state)
 
     shared.state.request_restart()
 
@@ -197,41 +198,41 @@ def update_config_states_table(state_name):
         config_state = config_states.all_config_states[state_name]
 
     config_name = config_state.get("name", "Config")
-    created_date = time.asctime(time.gmtime(config_state["created_at"]))
+    created_date = datetime.fromtimestamp(config_state["created_at"]).strftime('%Y-%m-%d %H:%M:%S')
     filepath = config_state.get("filepath", "<unknown>")
 
     try:
-        wui_remote = config_state["wui"]["remote"] or ""
-        wui_branch = config_state["wui"]["branch"]
-        wui_commit_hash = config_state["wui"]["commit_hash"] or "<unknown>"
-        wui_commit_date = config_state["wui"]["commit_date"]
-        if wui_commit_date:
-            wui_commit_date = time.asctime(time.gmtime(wui_commit_date))
+        webui_remote = config_state["webui"]["remote"] or ""
+        webui_branch = config_state["webui"]["branch"]
+        webui_commit_hash = config_state["webui"]["commit_hash"] or "<unknown>"
+        webui_commit_date = config_state["webui"]["commit_date"]
+        if webui_commit_date:
+            webui_commit_date = time.asctime(time.gmtime(webui_commit_date))
         else:
-            wui_commit_date = "<unknown>"
+            webui_commit_date = "<unknown>"
 
-        remote = f"""<a href="{html.escape(wui_remote)}" target="_blank">{html.escape(wui_remote or '')}</a>"""
-        commit_link = make_commit_link(wui_commit_hash, wui_remote)
-        date_link = make_commit_link(wui_commit_hash, wui_remote, wui_commit_date)
+        remote = f"""<a href="{html.escape(webui_remote)}" target="_blank">{html.escape(webui_remote or '')}</a>"""
+        commit_link = make_commit_link(webui_commit_hash, webui_remote)
+        date_link = make_commit_link(webui_commit_hash, webui_remote, webui_commit_date)
 
-        current_wui = config_states.get_wui_config()
+        current_webui = config_states.get_webui_config()
 
         style_remote = ""
         style_branch = ""
         style_commit = ""
-        if current_wui["remote"] != wui_remote:
+        if current_webui["remote"] != webui_remote:
             style_remote = STYLE_PRIMARY
-        if current_wui["branch"] != wui_branch:
+        if current_webui["branch"] != webui_branch:
             style_branch = STYLE_PRIMARY
-        if current_wui["commit_hash"] != wui_commit_hash:
+        if current_webui["commit_hash"] != webui_commit_hash:
             style_commit = STYLE_PRIMARY
 
         code = f"""<!-- {time.time()} -->
 <h2>Config Backup: {config_name}</h2>
 <div><b>Filepath:</b> {filepath}</div>
 <div><b>Created at:</b> {created_date}</div>
-<h2>wui State</h2>
-<table id="config_state_wui">
+<h2>WebUI State</h2>
+<table id="config_state_webui">
     <thead>
         <tr>
             <th>URL</th>
@@ -246,7 +247,7 @@ def update_config_states_table(state_name):
                 <label{style_remote}>{remote}</label>
             </td>
             <td>
-                <label{style_branch}>{wui_branch}</label>
+                <label{style_branch}>{webui_branch}</label>
             </td>
             <td>
                 <label{style_commit}>{commit_link}</label>
@@ -335,6 +336,11 @@ def normalize_git_url(url):
     return url
 
 
+def get_extension_dirname_from_url(url):
+    *parts, last_part = url.split('/')
+    return normalize_git_url(last_part)
+
+
 def install_extension_from_url(dirname, url, branch_name=None):
     check_access()
 
@@ -346,10 +352,7 @@ def install_extension_from_url(dirname, url, branch_name=None):
     assert url, 'No URL specified'
 
     if dirname is None or dirname == "":
-        *parts, last_part = url.split('/')
-        last_part = normalize_git_url(last_part)
-
-        dirname = last_part
+        dirname = get_extension_dirname_from_url(url)
 
     target_dir = os.path.join(extensions.extensions_dir, dirname)
     assert not os.path.exists(target_dir), f'Extension directory already exists: {target_dir}'
@@ -378,7 +381,7 @@ def install_extension_from_url(dirname, url, branch_name=None):
         except OSError as err:
             if err.errno == errno.EXDEV:
                 # Cross device link, typical in docker or when tmp/ and extensions/ are on different file systems
-                # Since we can't use a rename, do the slower but more versitile shutil.move()
+                # Since we can't use a rename, do the slower but more versatile shutil.move()
                 shutil.move(tmpdir, target_dir)
             else:
                 # Something else, not enough free space, permissions, etc.  rethrow it so that it gets handled.
@@ -449,7 +452,8 @@ def get_date(info: dict, key):
 
 def refresh_available_extensions_from_data(hide_tags, sort_column, filter_text=""):
     extlist = available_extensions["extensions"]
-    installed_extension_urls = {normalize_git_url(extension.remote): extension.name for extension in extensions.extensions}
+    installed_extensions = {extension.name for extension in extensions.extensions}
+    installed_extension_urls = {normalize_git_url(extension.remote) for extension in extensions.extensions if extension.remote is not None}
 
     tags = available_extensions.get("tags", {})
     tags_to_hide = set(hide_tags)
@@ -482,7 +486,7 @@ def refresh_available_extensions_from_data(hide_tags, sort_column, filter_text="
         if url is None:
             continue
 
-        existing = installed_extension_urls.get(normalize_git_url(url), None)
+        existing = get_extension_dirname_from_url(url) in installed_extensions or normalize_git_url(url) in installed_extension_urls
         extension_tags = extension_tags + ["installed"] if existing else extension_tags
 
         if any(x for x in extension_tags if x in tags_to_hide):
@@ -545,6 +549,7 @@ def create_ui():
                     extensions_disable_all = gr.Radio(label="Disable all extensions", choices=["none", "extra", "all"], value=shared.opts.disable_all_extensions, elem_id="extensions_disable_all")
                     extensions_disabled_list = gr.Text(elem_id="extensions_disabled_list", visible=False, container=False)
                     extensions_update_list = gr.Text(elem_id="extensions_update_list", visible=False, container=False)
+                    refresh = gr.Button(value='Refresh', variant="compact")
 
                 html = ""
 
@@ -563,7 +568,8 @@ def create_ui():
                 with gr.Row(elem_classes="progress-container"):
                     extensions_table = gr.HTML('Loading...', elem_id="extensions_installed_html")
 
-                ui.load(fn=extension_table, inputs=[], outputs=[extensions_table])
+                ui.load(fn=extension_table, inputs=[], outputs=[extensions_table], show_progress=False)
+                refresh.click(fn=extension_table, inputs=[], outputs=[extensions_table], show_progress=False)
 
                 apply.click(
                     fn=apply_and_restart,
@@ -582,7 +588,7 @@ def create_ui():
             with gr.TabItem("Available", id="available"):
                 with gr.Row():
                     refresh_available_extensions_button = gr.Button(value="Load from:", variant="primary")
-                    extensions_index_url = os.environ.get('wui_EXTENSIONS_INDEX', "https://huggingface.co/datasets/Elaina3/backup/resolve/main/index.json")
+                    extensions_index_url = os.environ.get('WEBUI_EXTENSIONS_INDEX', "https://raw.githubusercontent.com/AUTOMATIC1111/sd-wui-extensions/master/index.json")
                     available_extensions_index = gr.Text(value=extensions_index_url, label="Extension index URL", container=False)
                     extension_to_install = gr.Text(elem_id="extension_to_install", visible=False)
                     install_extension_button = gr.Button(elem_id="install_extension_button", visible=False)
@@ -644,7 +650,7 @@ def create_ui():
                 with gr.Row(elem_id="extensions_backup_top_row"):
                     config_states_list = gr.Dropdown(label="Saved Configs", elem_id="extension_backup_saved_configs", value="Current", choices=["Current"] + list(config_states.all_config_states.keys()))
                     modules.ui.create_refresh_button(config_states_list, config_states.list_config_states, lambda: {"choices": ["Current"] + list(config_states.all_config_states.keys())}, "refresh_config_states")
-                    config_restore_type = gr.Radio(label="State to restore", choices=["extensions", "wui", "both"], value="extensions", elem_id="extension_backup_restore_type")
+                    config_restore_type = gr.Radio(label="State to restore", choices=["extensions", "webui", "both"], value="extensions", elem_id="extension_backup_restore_type")
                     config_restore_button = gr.Button(value="Restore Selected Config", variant="primary", elem_id="extension_backup_restore")
                 with gr.Row(elem_id="extensions_backup_top_row2"):
                     config_save_name = gr.Textbox("", placeholder="Config Name", show_label=False)
