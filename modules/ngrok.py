@@ -26,5 +26,5 @@ def connect(token, port, options):
         print(f'Invalid ngrok authtoken? ngrok connection aborted due to: {e}\n'
               f'Your token: {token}, get the right one on https://dashboard.ngrok.com/get-started/your-authtoken')
     else:
-        print(f'ngrokに接続しました。 localhost:{port}! URL: {public_url}\n'
-               '起動が完了するとこのURLを開いて利用できます。')
+        print(f'ngrokに接続しました。 localhost:{port} URL: {public_url}\n'
+               '起動が完了すると、このURLを開いて利用できます。')
