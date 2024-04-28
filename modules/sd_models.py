@@ -772,7 +772,7 @@ def load_model(checkpoint_info=None, already_loaded_state_dict=None):
 
     timer.record("calculate empty prompt")
 
-    print(f"Model loaded in {timer.summary()}.")
+    print(f"VAEの読み込みが完了しました。 {timer.summary()}")
 
     return sd_model
 
@@ -896,7 +896,7 @@ def reload_model_weights(sd_model=None, info=None, forced_reload=False):
         script_callbacks.model_loaded_callback(sd_model)
         timer.record("script callbacks")
 
-    print(f"Weights loaded in {timer.summary()}.")
+    print(f"モデルの読み込みが完了しました。{timer.summary()}")
 
     model_data.set_sd_model(sd_model)
     sd_unet.apply_unet()
