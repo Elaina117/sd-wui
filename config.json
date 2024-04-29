@@ -24,7 +24,7 @@
     "clean_temp_dir_at_start": false,
     "outdir_samples": "",
     "outdir_txt2img_samples": "/content/drive/MyDrive/txt2img",
-    "outdir_img2img_samples": "outputs/img2img-images",
+    "outdir_img2img_samples": "/content/drive/MyDrive/img2img",
     "outdir_extras_samples": "outputs/extras-images",
     "outdir_grids": "",
     "outdir_txt2img_grids": "outputs/txt2img-grids",
