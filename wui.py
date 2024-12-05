@@ -45,7 +45,7 @@ def api_only():
     )
 
 
-def wui():
+def webui():
     from modules.shared_cmd_options import cmd_opts
 
     launch_api = cmd_opts.api
@@ -70,7 +70,7 @@ def wui():
         gradio_auth_creds = list(initialize_util.get_gradio_auth_creds()) or None
 
         auto_launch_browser = False
-        if os.getenv('SD_wui_RESTARTING') != '1':
+        if os.getenv('SD_WUI_RESTARTING') != '1':
             if shared.opts.auto_launch_browser == "Remote" or cmd_opts.autolaunch:
                 auto_launch_browser = True
             elif shared.opts.auto_launch_browser == "Local":
@@ -139,8 +139,8 @@ def wui():
             shared.demo.close()
             break
 
-        # disable auto launch wui in browser for subsequent UI Reload
-        os.environ.setdefault('SD_wui_RESTARTING', '1')
+        # disable auto launch webui in browser for subsequent UI Reload
+        os.environ.setdefault('SD_WUI_RESTARTING', '1')
 
         print('Restarting UI...')
         shared.demo.close()
@@ -156,7 +156,7 @@ def wui():
 if __name__ == "__main__":
     from modules.shared_cmd_options import cmd_opts
 
-    if cmd_opts.nowui:
+    if cmd_opts.nowebui:
         api_only()
     else:
-        wui()
+        webui()

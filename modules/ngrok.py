@@ -17,7 +17,7 @@ def connect(token, port, options):
     if account:
         options['basic_auth'] = account
     if not options.get('session_metadata'):
-        options['session_metadata'] = 'sd-wui'
+        options['session_metadata'] = 'stable-diffusion-wui'
 
 
     try:
@@ -26,5 +26,5 @@ def connect(token, port, options):
         print(f'Invalid ngrok authtoken? ngrok connection aborted due to: {e}\n'
               f'Your token: {token}, get the right one on https://dashboard.ngrok.com/get-started/your-authtoken')
     else:
-        print(f'ngrokに接続しました。 localhost:{port} URL: {public_url}\n'
-               '起動が完了すると、このURLを開いて利用できます。')
+        print(f'ngrok connected to localhost:{port}! URL: {public_url}\n'
+               'You can use this link after the launch is complete.')

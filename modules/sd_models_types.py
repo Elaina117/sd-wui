@@ -6,8 +6,8 @@ if TYPE_CHECKING:
     from modules.sd_models import CheckpointInfo
 
 
-class wuiSdModel(LatentDiffusion):
-    """This class is not actually instantinated, but its fields are created and fieeld by wui"""
+class WebuiSdModel(LatentDiffusion):
+    """This class is not actually instantinated, but its fields are created and fieeld by webui"""
 
     lowvram: bool
     """True if lowvram/medvram optimizations are enabled -- see modules.lowvram for more info"""
@@ -32,3 +32,9 @@ class wuiSdModel(LatentDiffusion):
 
     is_sd1: bool
     """True if the model's architecture is SD 1.x"""
+
+    is_sd3: bool
+    """True if the model's architecture is SD 3"""
+
+    latent_channels: int
+    """number of layer in latent image representation; will be 16 in SD3 and 4 in other version"""

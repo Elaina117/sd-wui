@@ -16,7 +16,7 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
 fi
 
 # Read variables from wui-user.sh
-# shellauncheck source=/dev/null
+# shellcheck source=/dev/null
 if [[ -f "$SCRIPT_DIR"/wui-user.sh ]]
 then
     source "$SCRIPT_DIR"/wui-user.sh
@@ -35,16 +35,20 @@ then
     install_dir="$SCRIPT_DIR"
 fi
 
-# Name of the subdirectory (defaults to sd-wui)
+# Name of the subdirectory (defaults to stable-diffusion-wui)
 if [[ -z "${clone_dir}" ]]
 then
-    clone_dir="sd-wui"
+    clone_dir="stable-diffusion-wui"
 fi
 
 # python3 executable
 if [[ -z "${python_cmd}" ]]
 then
-    python_cmd="python3"
+  python_cmd="python3.10"
+fi
+if [[ ! -x "$(command -v "${python_cmd}")" ]]
+then
+  python_cmd="python3"
 fi
 
 # git executable
@@ -113,13 +117,13 @@ then
     exit 1
 fi
 
-if [[ -d .git ]]
+if [[ -d "$SCRIPT_DIR/.git" ]]
 then
     printf "\n%s\n" "${delimiter}"
     printf "Repo already cloned, using it as install directory"
     printf "\n%s\n" "${delimiter}"
-    install_dir="${PWD}/../"
-    clone_dir="${PWD##*/}"
+    install_dir="${SCRIPT_DIR}/../"
+    clone_dir="${SCRIPT_DIR##*/}"
 fi
 
 # Check prerequisites
@@ -195,9 +199,9 @@ then
     cd "${clone_dir}"/ || { printf "\e[1m\e[31mERROR: Can't cd to %s/%s/, aborting...\e[0m" "${install_dir}" "${clone_dir}"; exit 1; }
 else
     printf "\n%s\n" "${delimiter}"
-    printf "Clone sd-wui"
+    printf "Clone stable-diffusion-wui"
     printf "\n%s\n" "${delimiter}"
-    "${GIT}" clone https://github.com/AUTOMATIC1111/sd-wui.git "${clone_dir}"
+    "${GIT}" clone https://github.com/AUTOMATIC1111/stable-diffusion-webui.git "${clone_dir}"
     cd "${clone_dir}"/ || { printf "\e[1m\e[31mERROR: Can't cd to %s/%s/, aborting...\e[0m" "${install_dir}" "${clone_dir}"; exit 1; }
 fi
 
@@ -210,12 +214,15 @@ then
     if [[ ! -d "${venv_dir}" ]]
     then
         "${python_cmd}" -m venv "${venv_dir}"
+        "${venv_dir}"/bin/python -m pip install --upgrade pip
         first_launch=1
     fi
-    # shellauncheck source=/dev/null
+    # shellcheck source=/dev/null
     if [[ -f "${venv_dir}"/bin/activate ]]
     then
         source "${venv_dir}"/bin/activate
+        # ensure use of python from venv
+        python_cmd="${venv_dir}"/bin/python
     else
         printf "\n%s\n" "${delimiter}"
         printf "\e[1m\e[31mERROR: Cannot activate python venv, aborting...\e[0m"
@@ -243,7 +250,7 @@ prepare_tcmalloc() {
         for lib in "${TCMALLOC_LIBS[@]}"
         do
             # Determine which type of tcmalloc library the library supports
-            TCMALLOC="$(PATH=/usr/sbin:$PATH ldconfig -p | grep -P $lib | head -n 1)"
+            TCMALLOC="$(PATH=/sbin:/usr/sbin:$PATH ldconfig -p | grep -P $lib | head -n 1)"
             TC_INFO=(${TCMALLOC//=>/})
             if [[ ! -z "${TC_INFO}" ]]; then
                 echo "Check TCMalloc: ${TC_INFO}"
@@ -275,7 +282,7 @@ prepare_tcmalloc() {
 }
 
 KEEP_GOING=1
-export SD_wui_RESTART=tmp/restart
+export SD_WUI_RESTART=tmp/restart
 while [[ "$KEEP_GOING" -eq "1" ]]; do
     if [[ ! -z "${ACCELERATE}" ]] && [ ${ACCELERATE}="True" ] && [ -x "$(command -v accelerate)" ]; then
         printf "\n%s\n" "${delimiter}"
