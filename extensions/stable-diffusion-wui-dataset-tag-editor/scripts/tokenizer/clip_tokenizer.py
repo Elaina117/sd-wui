@@ -1,4 +1,4 @@
-# Brought from AUTOMATIC1111's stable-diffusion-webui-tokenizer and modified
+# Brought from AUTOMATIC1111's stable-diffusion-wui-tokenizer and modified
 # https://github.com/AUTOMATIC1111/stable-diffusion-webui-tokenizer/blob/master/scripts/tokenizer.py
 
 from typing import List

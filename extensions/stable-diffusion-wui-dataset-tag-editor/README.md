@@ -1,7 +1,7 @@
 # Dataset Tag Editor
 [**Stand alone version is here**](https://github.com/toshiaki1729/dataset-tag-editor-standalone): This may be better to avoid some known bugs.
 
-**Due to gradio update on webUI, the latest version don't support old webUI.**  
+**Due to gradio update on webUI, the latest version don't support old wUI.**  
 Please see [Releases](https://github.com/toshiaki1729/stable-diffusion-webui-dataset-tag-editor/releases) page and check the compatibility with webUI you are using.
 
 [日本語 Readme](README-JP.md)
